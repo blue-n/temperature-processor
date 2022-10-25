@@ -1,0 +1,10 @@
+[
+	{"laundryRoom": "Water Alarm"},
+	{"temperature": "25c"},
+	{"humidity": "10%"},
+	{"smokeAlarm": "true"},
+	{"fireAlarm": "false"},
+	{"message": "something here"},
+	{"temperature": "25c"},
+	{"humidity": "10%"}
+]
