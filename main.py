@@ -28,6 +28,10 @@ def humidity(value):
     pct = float(value.strip('%'))/100
     print("Humidity: {0:.2%}".format(pct))
 
+def humidity2(value):
+    humid = float(value.strip('%'))/100
+    print("Humidity:{0}".format(humid))
+
 def main():
     with open('sensor.json', 'r') as f:
         data = json.load(f)
@@ -46,6 +50,12 @@ def main():
         elif key == "humidity":
               #What it might look like to factor in other logic than just the read  & print
             humidity(value)
+        elif key == "smokeAlarm"
+          print("Smoke Alarm: ", value)
+        elif key == "fireAlarm":
+          print("Fire Alarm: ", value)
+        elif key == "humidity2":
+          print("Humidity: ", value)
         else:
             print(key)
 
