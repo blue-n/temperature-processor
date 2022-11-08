@@ -6,5 +6,5 @@
 	{"fireAlarm": "false"},
 	{"message": "something here"},
 	{"temperature": "25c"},
-	{"humidity2": "9%"}
+	{"humidity": "9%"}
 ]
