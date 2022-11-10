@@ -1,13 +1,21 @@
 import json
 
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/test_metric/temperature/<value>")
+def test_metric(value):
+    return str(temperature(value))
+
 from datetime import datetime
 ts = datetime.now()
 print("Timestamp is:", ts)
 
-
 def temperature(value):
     temp = float(value.strip('c'))
     print("Temperature:{0}c".format(temp))
+    return temp
 
     #temp = float("25c".strip('c'))
     #temp = float("25")
@@ -15,24 +23,26 @@ def temperature(value):
     # print("Temperature:{0}c".format(25))
     # print("Temperature:25c")
 
-#smoke_alarm = ['red']
-    # Having a bit of trouble with the if statements/ the true or false statements I was thinking if somehow I can colour code it so the computer knows like ok the smoke alarm is the colour red if it's red then nothing wrong, if it isn't then something is wrong
+def laundryRoom(value):
+    print(value)
+    return value
 
-# if smoke_alarm == red:
-    #print("There is nothing wrong")
+def smokeAlarm(value):
+    print(value)
+    return value
 
-    # elif:
-    #print("Alarm is turned on")
-
+def fireAlarm(value):
+    print(value)
+    return value
 
 def humidity(value):
     pct = float(value.strip('%'))/100
     print("Humidity: {0:.2%}".format(pct))
-
+    return pct
 
 def message(value):
     print(value)
-
+    return value
 
 def main():
     with open('sensor.json', 'r') as f:
@@ -60,6 +70,24 @@ def main():
             else:
                 print(key)
 
+@app.route("/metric/<key>/<value>")
+def processor(key, value):
+    if key == "laundryRoom":
+        return str("Laundry Room: "+ value)
+    elif key == "temperature":
+        return str(temperature(value))
+        #print("Temperature: ", value)
+    elif key == "humidity":
+        # What it might look like to factor in other logic than just the read  & print
+        return str(humidity(value))
+    elif key == "smokeAlarm":
+        return str("Smoke Alarm: "+ value)
+    elif key == "fireAlarm":
+        return str("Fire Alarm: "+ value)
+    elif key == "message":
+        return str(message(value))
+    else:
+        return str(key)
 
 if __name__ == "__main__":
     main()
