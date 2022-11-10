@@ -2,7 +2,15 @@ import json
 
 from flask import Flask
 
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
+
 app = Flask(__name__)
+
+bucket = "sensor"
+influxClient = InfluxDBClient(url="http://localhost:8086", token="initadmintoken", org="admin")
+influxWrite = influxClient.write_api(write_options=SYNCHRONOUS)
+influxRead = influxClient.query_api()
 
 @app.route("/test_metric/temperature/<value>")
 def test_metric(value):
@@ -14,6 +22,8 @@ print("Timestamp is:", ts)
 
 def temperature(value):
     temp = float(value.strip('c'))
+    p = Point("temperature").field("temperature", temp)
+    influxWrite.write(bucket=bucket, record=p)
     print("Temperature:{0}c".format(temp))
     return temp
 
@@ -30,13 +40,15 @@ def laundryRoom(value):
 def smokeAlarm(value):
     print(value)
     return value
-
+#change a fals = 0 and true = 1
 def fireAlarm(value):
     print(value)
     return value
 
 def humidity(value):
     pct = float(value.strip('%'))/100
+    p = Point("humidity").field("humidity", pct)
+    influxWrite.write(bucket=bucket, record=p)
     print("Humidity: {0:.2%}".format(pct))
     return pct
 
