@@ -39,10 +39,25 @@ def laundryRoom(value):
 
 def smokeAlarm(value):
     print(value)
+    if smokeAlarm(value):
+        value = False
+        print(0)
+        value = True
+        print(1)
+    p = Point("smokeAlarm").field("smokeAlarm", value)
+    influxWrite.write(bucket=bucket, record=p)
     return value
-#change a fals = 0 and true = 1
+#change a false = 0 and true = 1
+
 def fireAlarm(value):
     print(value)
+    if fireAlarm(value):
+        value = False
+        print(0)
+        value = True
+        print (1)
+    p = Point("fireAlarm").field("fireAlarm", value)
+    influxWrite.write(bucket=bucket, record=p)
     return value
 
 def humidity(value):
