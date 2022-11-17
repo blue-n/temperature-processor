@@ -7,7 +7,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 app = Flask(__name__)
 
-bucket = "sensor"
+myBucket = "sensor"
 influxClient = InfluxDBClient(url="http://localhost:8086", token="initadmintoken", org="admin")
 influxWrite = influxClient.write_api(write_options=SYNCHRONOUS)
 influxRead = influxClient.query_api()
@@ -20,10 +20,10 @@ from datetime import datetime
 ts = datetime.now()
 print("Timestamp is:", ts)
 
-def temperature(value):
-    temp = float(value.strip('c'))
+def temperature(input):
+    temp = float(input.strip('c'))
     p = Point("temperature").field("temperature", temp)
-    influxWrite.write(bucket=bucket, record=p)
+    influxWrite.write(bucket=myBucket, record=p)
     print("Temperature:{0}c".format(temp))
     return temp
 
@@ -37,16 +37,17 @@ def laundryRoom(value):
     print(value)
     return value
 
-def smokeAlarm(value):
-    print(value)
-    if smokeAlarm(value):
-        value = False
+def smokeAlarm(input):
+    #print(value)
+    if input.lower() == "false":
+        metric = False
         print(0)
-        value = True
+    else: 
+        metric = True
         print(1)
-    p = Point("smokeAlarm").field("smokeAlarm", value)
-    influxWrite.write(bucket=bucket, record=p)
-    return value
+    p = Point("smokeAlarm").field("smokeAlarm", metric)
+    influxWrite.write(bucket=myBucket, record=p)
+    return metric
 #change a false = 0 and true = 1
 
 def fireAlarm(value):
@@ -57,13 +58,13 @@ def fireAlarm(value):
         value = True
         print (1)
     p = Point("fireAlarm").field("fireAlarm", value)
-    influxWrite.write(bucket=bucket, record=p)
+    influxWrite.write(bucket=myBucket, record=p)
     return value
 
 def humidity(value):
     pct = float(value.strip('%'))/100
     p = Point("humidity").field("humidity", pct)
-    influxWrite.write(bucket=bucket, record=p)
+    influxWrite.write(bucket=myBucket, record=p)
     print("Humidity: {0:.2%}".format(pct))
     return pct
 
@@ -97,22 +98,22 @@ def main():
             else:
                 print(key)
 
-@app.route("/metric/<key>/<value>")
-def processor(key, value):
+@app.route("/metric/<key>/<enter>")
+def processor(key, enter):
     if key == "laundryRoom":
-        return str("Laundry Room: "+ value)
+        return str("Laundry Room: "+ enter)
     elif key == "temperature":
-        return str(temperature(value))
+        return str(temperature(enter))
         #print("Temperature: ", value)
     elif key == "humidity":
         # What it might look like to factor in other logic than just the read  & print
-        return str(humidity(value))
+        return str(humidity(enter))
     elif key == "smokeAlarm":
-        return str("Smoke Alarm: "+ value)
+        return str(smokeAlarm(enter))
     elif key == "fireAlarm":
-        return str("Fire Alarm: "+ value)
+        return str("Fire Alarm: "+ enter)
     elif key == "message":
-        return str(message(value))
+        return str(message(enter))
     else:
         return str(key)
 
