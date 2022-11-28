@@ -1,29 +1,23 @@
 import json
 
+import helpers
+from sensors import humidity, firealarm
+
 from flask import Flask
-
-from influxdb_client import InfluxDBClient, Point
-from influxdb_client.client.write_api import SYNCHRONOUS
-
-app = Flask(__name__)
-
-myBucket = "sensor"
-influxClient = InfluxDBClient(url="http://localhost:8086", token="initadmintoken", org="admin")
-influxWrite = influxClient.write_api(write_options=SYNCHRONOUS)
-influxRead = influxClient.query_api()
-
-@app.route("/test_metric/temperature/<value>")
-def test_metric(value):
-    return str(temperature(value))
 
 from datetime import datetime
 ts = datetime.now()
 print("Timestamp is:", ts)
 
+app = Flask(__name__)
+
+#-----------------------------------------#
+
 def temperature(input):
+    #for i in range(1,3600): do curl "http://localhost:5000/metric/temperature/$((50 + $RANDOM % 20 ))c"; sleep 1; done
     temp = float(input.strip('c'))
-    p = Point("temperature").field("temperature", temp)
-    influxWrite.write(bucket=myBucket, record=p)
+    p = helpers.Point("temperature").field("temperature", temp)
+    helpers.influxWrite.write(bucket=helpers.myBucket, record=p)
     print("Temperature:{0}c".format(temp))
     return temp
 
@@ -35,44 +29,34 @@ def temperature(input):
 
 def laundryRoom(value):
     print(value)
+    p = helpers.Point("laundryRoom").field("laundryRoom", value)
+    helpers.influxWrite.write(bucket=helpers.myBucket, record=p)
     return value
 
 def smokeAlarm(input):
-    #print(value)
-    if input.lower() == "false":
-        metric = False
-        print(0)
-    else: 
+    print(input)
+    if input.lower() == "smoke":
         metric = True
         print(1)
-    p = Point("smokeAlarm").field("smokeAlarm", metric)
-    influxWrite.write(bucket=myBucket, record=p)
+        print("DANGER: Smoke Alert")
+    else: 
+        metric = False
+        print(0)
+        print("No smoke")
+    p = helpers.Point("smokeAlarm").field("smokeAlarm", metric)
+    helpers.influxWrite.write(bucket=helpers.myBucket, record=p)
     return metric
 #change a false = 0 and true = 1
-
-def fireAlarm(value):
-    print(value)
-    if fireAlarm(value):
-        value = False
-        print(0)
-        value = True
-        print (1)
-    p = Point("fireAlarm").field("fireAlarm", value)
-    influxWrite.write(bucket=myBucket, record=p)
-    return value
-
-def humidity(value):
-    pct = float(value.strip('%'))/100
-    p = Point("humidity").field("humidity", pct)
-    influxWrite.write(bucket=myBucket, record=p)
-    print("Humidity: {0:.2%}".format(pct))
-    return pct
+#if smoke is equal to "smoke", then follow through with the command metric= True
+#if smoke does not equal to smoke then it will follow through with the else command (metric = false)
 
 def message(value):
     print(value)
+    p = helpers.Point("message").field("message", value)
+    helpers.influxWrite.write(bucket=helpers.myBucket, record=p)
     return value
 
-def main():
+""" def main():
     with open('sensor.json', 'r') as f:
         data = json.load(f)
 
@@ -96,7 +80,7 @@ def main():
             elif key == "message":
                 message(value)
             else:
-                print(key)
+                print(key) """
 
 @app.route("/metric/<key>/<enter>")
 def processor(key, enter):
@@ -107,15 +91,16 @@ def processor(key, enter):
         #print("Temperature: ", value)
     elif key == "humidity":
         # What it might look like to factor in other logic than just the read  & print
-        return str(humidity(enter))
+        return str(humidity.humidity(enter))
     elif key == "smokeAlarm":
         return str(smokeAlarm(enter))
     elif key == "fireAlarm":
-        return str("Fire Alarm: "+ enter)
+        return str(firealarm.fireAlarm(enter))
     elif key == "message":
         return str(message(enter))
     else:
         return str(key)
 
 if __name__ == "__main__":
-    main()
+    #main()
+    app.run(port=5001)
