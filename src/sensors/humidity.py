@@ -7,4 +7,3 @@ def humidity(value):
     helpers.influxWrite.write(bucket=helpers.myBucket, record=p)
     print("Humidity: {0:.2%}".format(pct))
     return pct
-    
