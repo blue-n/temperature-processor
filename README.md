@@ -2,10 +2,10 @@
 
 ## Optional Environment Variables
 
-- INFLUXDB_URL: http(s)://influxdbhost:8086
-- INFLUXDB_TOKEN: InfluxDB token
-- INFLUXDB_ORG: InfluxDB organization
 - INFLUXDB_BUCKET: InfluxDB bucket
+- INFLUXDB_ORG: InfluxDB organization
+- INFLUXDB_TOKEN: InfluxDB token
+- INFLUXDB_URL: http(s)://influxdbhost:8086
 - TEMPERATURE_PORT: Port Temperature-Sensor to listen on
 
 ## Testing

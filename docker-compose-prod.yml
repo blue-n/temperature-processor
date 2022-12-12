@@ -1,0 +1,37 @@
+services:
+    grafana:
+        image: grafana/grafana-oss
+        ports: 
+            - "3000:3000"
+        volumes:
+            - grafana:/var/lib/grafana
+    influxdb:
+        image: influxdb:2.2-alpine
+        volumes:
+            - influxdb:/var/lib/influxdb2
+        ports:
+            - "8086:8086"
+        environment:
+            - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_TOKEN}
+            - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+            - DOCKER_INFLUXDB_INIT_MODE=setup
+            - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
+            - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
+            - DOCKER_INFLUXDB_INIT_RETENTION=1w # One Week
+            - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
+    temperature-sensor:
+        build: 
+            context: .
+            dockerfile: ./build/Dockerfile
+        environment:
+            - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+            - INFLUXDB_ORG=${INFLUXDB_ORG}
+            - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+            - INFLUXDB_URL=${INFLUXDB_URL}
+            - TEMPERATURE_HOST=0.0.0.0
+            - TEMPERATURE_PORT=${TEMPERATURE_PORT}
+        ports:
+            - "8080:${TEMPERATURE_PORT}"
+volumes:
+  influxdb:
+  grafana:

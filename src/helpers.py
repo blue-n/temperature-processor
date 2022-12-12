@@ -7,10 +7,10 @@ token = os.getenv("INFLUXDB_TOKEN", "initadmintoken")
 org = os.getenv("INFLUXDB_ORG", "admin")
 myBucket = os.getenv("INFLUXDB_BUCKET", "sensor")
 
-print("InfluxDB URL: ", url)
-print("InfluxDB Token: ", token)
-print("InfluxDB Org: ", org)
 print("InfluxDB Bucket: ", myBucket)
+print("InfluxDB Org: ", org)
+print("InfluxDB Token: ", token)
+print("InfluxDB URL: ", url)
 
 influxClient = InfluxDBClient(url=url, token=token, org=org)
 influxWrite = influxClient.write_api(write_options=SYNCHRONOUS)
