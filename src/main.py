@@ -1,15 +1,19 @@
-import json
-
-import helpers
 from sensors import humidity, firealarm, laundryroom, temperature, smokealarm, message
 
 from flask import Flask
 
+import os
 from datetime import datetime
 ts = datetime.now()
 print("Timestamp is:", ts)
 
 app = Flask(__name__)
+
+host = os.getenv("TEMPERATURE_HOST", "127.0.0.1")
+port = os.getenv("TEMPERATURE_PORT", 5001)
+
+print("Hosted on host: ", host)
+print("Hosted on port: ", port)
 
 #-----------------------------------------#
 @app.route("/metric/<key>/<enter>")
@@ -33,4 +37,4 @@ def processor(key, enter):
 
 if __name__ == "__main__":
     #main()
-    app.run(port=5001)
+    app.run(port=port, host=host)
