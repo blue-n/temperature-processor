@@ -2,6 +2,7 @@ import helpers
 
 def temperature(input):
 #the function temperature is defined
+#Processes the temperature value that was received from the url/website and returns the value back as a string
     temp = float(input.strip('c'))
     p = helpers.Point("temperature").field("temperature", temp)
     helpers.influxWrite.write(bucket=helpers.myBucket, record=p)

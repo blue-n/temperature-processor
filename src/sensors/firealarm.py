@@ -2,6 +2,7 @@ import helpers
 
 def fireAlarm(value):
 #defined the function firealarm
+#processes the information/value from a string to a constant/number that is transfered to the database
     print(value)
     #created an if...else... statement
     if value.lower()=="fire":

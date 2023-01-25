@@ -2,6 +2,7 @@ import helpers
 
 def smokeAlarm(input):
 #smokealarm
+#processes the given data from a string to a state then stores it and displays it on the database
     print(input)
     #Created an if statement
     if input.lower() == "smoke":

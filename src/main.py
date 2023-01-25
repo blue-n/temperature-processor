@@ -21,6 +21,7 @@ app = Flask(__name__)
 # the app.route is what helped create the website
 def processor(key, enter):
 #Defined the function processor
+#takes the string/value from the url (website) and inputs it into one of the functions
     #Created an if..elif..else statement
     if key == "laundryRoom":
         return str(laundryroom.laundryRoom(enter))
